@@ -11,6 +11,15 @@ export class Canvas {
     }
 
     clear() {
-        this.ctx.clearRect(0,0, this.height, this.width)
+        this.ctx.clearRect(0,0, this.width,  this.height)
+    }
+
+    drawCircle(x,y, radius, color = draw_utils.getRandomColor()){
+        this.ctx.beginPath();
+        this.ctx.fillStyle = color;
+        this.ctx.fillStyle = color
+        this.ctx.arc(x,y,radius,0, Math.PI*2);
+        this.ctx.closePath();
+        this.ctx.fill();
     }
 }
