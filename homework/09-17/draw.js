@@ -3,21 +3,19 @@ import * as drawUtils from './drawUtils.js'
 import {Canvas} from './Canvas.js'
 import { Gear } from './Gear.js';
 
-canvas = new Canvas("#canvas");
+init()
+function init() {
+    canvas = new Canvas("#canvas");
+    let color = drawUtils.getRandomColor();
+    const ref = (time) => draw(canvas,time)
+    window.requestAnimationFrame(ref);
+}
 
-let x=0;
-let y=5;
-let dx = 10;
-let dy = 10
-let color = drawUtils.getRandomColor();
-    
-// setInterval(() => draw(canvas), 1);
-draw(canvas)
 
-async function draw(canvas) {
-    let gear = new Gear(12);
-    gear.draw(canvas.ctx)   
-
+function draw(canvas, time) {
+    utils.logs(time)
+    let gear = new Gear(12,10000);
+    gear.draw(canvas.ctx, time);
 }
 
 

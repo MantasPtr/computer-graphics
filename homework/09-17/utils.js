@@ -1,7 +1,6 @@
-export function logs(){
-    if (arguments.length > 0) 
-        console.log(...arguments);
-    return arguments;
+export function logs(x){
+    console.log(x);
+    return x;
 }
 
 export function sleep(ms) {

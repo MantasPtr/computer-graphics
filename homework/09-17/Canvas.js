@@ -7,7 +7,6 @@ export class Canvas {
         this.ctx = html_canvas.getContext("2d");
         this.width = html_canvas.width;
         this.height = html_canvas.height;
-
     }
 
     clear() {
