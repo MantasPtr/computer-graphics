@@ -1,92 +1,103 @@
 <html>
- <head>
+
+<head>
   <script type="application/javascript">
 
-    const begin_y=0
+    const begin_y = 0
     const dim = 500
     let recursion_depth = 6
-    
-  function redraw(value){
-    recursion_depth = value;
-    document.getElementById("recursion_value").textContent = value
-    draw()
 
-  }
+    function redraw(value) {
+      recursion_depth = value;
+      document.getElementById("recursion_value").textContent = value
+      draw()
 
-  function draw() {
-    let canvas = document.getElementById('canvas');
-    if (canvas.getContext) {
-      ctx = canvas.getContext("2d");
-    
-    //clean canvas
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    // Draw border
-    ctx.beginPath();
-    ctx.moveTo(0  , 0);
-    ctx.lineTo(dim, 0);
-    ctx.lineTo(dim, dim);
-    ctx.lineTo(0  , dim);
-    ctx.closePath();
-    ctx.stroke();
-
-    recursiveDraw(recursion_depth);
     }
-  
-    // Recursive draw 
-    function recursiveDraw(step, color = null) {
-      if (step > 0) {
-        step = step-1; 
 
-        // TOP LEFT
-        ctx.save();
-        ctx.transform(-0.5, 0, 0, 0.5, 0.5*dim, 0); 
-        recursiveDraw(step, color ? color : "red"); 
-        ctx.restore();
+    function draw() {
+      let canvas = document.getElementById('canvas');
 
-        //TOP RIGHT
-        ctx.save();
-        ctx.transform(0, -0.5, -0.5, 0, dim, 0.5*dim); 
-        recursiveDraw(step, color ? color : "green"); 
-        ctx.restore();
-        
+      if (canvas.getContext) {
+        ctx = canvas.getContext("2d");
 
-        // BOTTOM RIGHT
-        ctx.save()
-        ctx.transform(0, -0.25, 0.25, 0, 0.5*dim, 0.75*dim);  
-        recursiveDraw(step, color ? color : "blue");
-        ctx.restore();
-        
-        // BOTTOM LEFT
-        ctx.save()
-        ctx.transform(0.5, 0, 0, 0.5, 0, 0.5*dim); 
-        recursiveDraw(step, color ? color : "orange"); 
-        ctx.restore()
+        //clean canvas
+        clearCanvas(ctx)
+        // Draw border
+        drawBorder(ctx)
+        recursiveDraw(recursion_depth);
+      }
+
+       function drawBorder(ctx) {
+        ctx.beginPath();
+        ctx.moveTo(0, 0);
+        ctx.lineTo(dim, 0);
+        ctx.lineTo(dim, dim);
+        ctx.lineTo(0, dim);
+        ctx.closePath();
+        ctx.stroke();
+      }
+
+      function clearCanvas(ctx) {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+      }
+
+      // Recursive draw 
+      function recursiveDraw(step, color = null) {
+        if (step > 0) {
+          step = step - 1;
+
+          // TOP LEFT
+          ctx.save();
+          ctx.transform(-0.5, 0, 0, 0.5, 0.5 * dim, 0);
+          recursiveDraw(step, color ? color : "red");
+          ctx.restore();
+
+          //TOP RIGHT
+          ctx.save();
+          ctx.transform(0, -0.5, -0.5, 0, dim, 0.5 * dim);
+          recursiveDraw(step, color ? color : "green");
+          ctx.restore();
+
+
+          // BOTTOM RIGHT
+          ctx.save()
+          ctx.transform(0, -0.25, 0.25, 0, 0.5 * dim, 0.75 * dim);
+          recursiveDraw(step, color ? color : "blue");
+          ctx.restore();
+
+          // BOTTOM LEFT
+          ctx.save()
+          ctx.transform(0.5, 0, 0, 0.5, 0, 0.5 * dim);
+          recursiveDraw(step, color ? color : "orange");
+          ctx.restore()
 
         }
-      else drawT(color);    
+        else drawT(color);
+      }
+
+      function drawT(color) {
+        ctx.fillStyle = color ? color : "black";
+        ctx.beginPath();
+        ctx.moveTo(0, 0);
+        ctx.lineTo(dim, 0);
+        ctx.lineTo(dim, 0.5 * dim);
+        ctx.lineTo(0, dim);
+        ctx.fill();
+      }
     }       
-  
-    function drawT(color) {
-      ctx.fillStyle = color ? color : "black";
-      ctx.beginPath();
-      ctx.moveTo(0  ,0);
-      ctx.lineTo(dim,0);
-      ctx.lineTo(dim,0.5*dim);
-      ctx.lineTo(0,dim); 
-      ctx.fill();
-    }
-  }       
   </script>
- </head>
- <body onload="draw();">
-   <h1>https://klevas.mif.vu.lt/~rimask/old/fractals/35.png</h1>
-   <div>
+</head>
+
+<body onload="draw();">
+  <h1>https://klevas.mif.vu.lt/~rimask/old/fractals/35.png</h1>
+  <div>
     <input type="range" value="6" min="0" max="8" class="slider" id="myRange" oninput="redraw(value)">
     <span id="recursion_value">6</span>
   </div>
-   <div>
-     <canvas id="canvas" width="540" height="540"></canvas>
-     <img src="https://klevas.mif.vu.lt/~rimask/old/fractals/35.png">
-   </div>
- </body>
+  <div>
+    <canvas id="canvas" width="540" height="540"></canvas>
+    <img src="https://klevas.mif.vu.lt/~rimask/old/fractals/35.png">
+  </div>
+</body>
+
 </html>
