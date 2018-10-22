@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+    <title>Example 01.03 - Materials and light</title>
+    <script type="text/javascript" src="../libs/three.js"></script>
+    <script
+			  src="https://code.jquery.com/jquery-1.12.4.min.js"
+			  integrity="sha256-ZosEbRLbNQzLpnKIkEdrPv7lOy9C27hHQ+Xp8a4MxAQ="
+			  crossorigin="anonymous"></script>
+    <script type="text/javascript" src="../libs/stats.js"></script>
+    <script type="text/javascript" src="../libs/dat.gui.js"></script>
+    <script type="text/javascript" src="../libs/controls.js"></script>
+    <style>
+        body{
+            /* set margin to 0 and overflow to hidden, to go fullscreen */
+            margin: 0;
+            overflow: hidden;
+        }
+    </style>
+</head>
+<body>
+        <div id="WebGL-output">
+        </div>
+
+<script type="text/javascript">
+
+    const logs = (a) => {console.log(a); return a;}
+    let stats;
+    // once everything is loaded, we run our Three.js stuff.
+    $(function () {
+        
+        // create a scene, that will hold all our elements such as objects, cameras and lights.
+        const scene = new THREE.Scene();
+        // create a camera, which defines where we're looking at.
+        const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
+        stats = new Stats();
+
+        controls = new THREE.TrackballControls( camera );
+
+        controls.rotateSpeed = 1.0;
+        controls.zoomSpeed = 1.2;
+        controls.panSpeed = 0.8;
+
+        controls.noZoom = false;
+        controls.noPan = false;
+
+        controls.staticMoving = true;
+        controls.dynamicDampingFactor = 0.3;
+
+        controls.keys = [ 65, 83, 68 ];
+
+        controls.addEventListener( 'change', render );
+        // create a render and set the size
+        const renderer = new THREE.WebGLRenderer();
+
+        renderer.setClearColor(new THREE.Color(0xEEEEEE));
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.shadowMap.enabled = true;
+
+        // create the ground plane
+        const planeGeometry = new THREE.PlaneGeometry(60,20,0);
+        const planeMaterial =    new THREE.MeshLambertMaterial({color: 0xffffff});
+        const plane = new THREE.Mesh(planeGeometry,planeMaterial);
+        plane.receiveShadow  = true;
+
+        // rotate and position the plane
+        plane.rotation.x=-0.5*Math.PI;
+        plane.position.x=15
+        plane.position.y=0
+        plane.position.z=0
+
+        // add the plane to the scene
+        scene.add(plane);
+        
+
+        // const cubeGeometry1 = new THREE.CubeGeometry(1,8,1);
+        // const cubeMaterial1 = new THREE.MeshLambertMaterial({color: 0x0000ff});
+        // const cube0 = new THREE.Mesh(cubeGeometry1, cubeMaterial1);
+        // cube0.position.x=0
+        // cube0.position.y=0
+        // cube0.position.z=0
+        // cube0.castShadow = false;
+        // scene.add(cube0)
+        
+        // create a cube
+        for (let i = 0; i<20; i++) {
+            const group = new THREE.Group();
+            const cubeGeometry = new THREE.CubeGeometry(3,1,8);
+            const cubeMaterial = new THREE.MeshLambertMaterial({color: 0xff0000});
+            const cube = new THREE.Mesh(cubeGeometry, cubeMaterial);
+            cube.castShadow = true;
+    
+            // position the cube
+            cube.position.x=1.5;
+            cube.position.y=0.5;
+            cube.position.z=4;
+            
+            group.add(cube)
+            group.rotation.y= i/10*Math.PI
+            group.position.y=i
+            // add the cube to the scene
+            scene.add(group);
+        }
+
+        // position and point the camera to the center of the scene
+        camera.position.x = -30;
+        camera.position.y = 40;
+        camera.position.z = 30;
+        camera.lookAt(scene.position);
+
+        // add spotlight for the shadows
+        const spotLight = new THREE.SpotLight( 0xffffff );
+        spotLight.position.set( -40, 60, -10 );
+        spotLight.castShadow = true;
+        scene.add( spotLight );
+
+        // add the output of the renderer to the html element
+        $("#WebGL-output").append(renderer.domElement);
+
+        // call the render function
+        renderer.render(scene, camera);
+        animate()
+
+        function animate() {
+            requestAnimationFrame( animate );
+            controls.update();
+        }
+        function render() {
+            renderer.render( scene, camera );
+            stats.update();
+        }
+        
+    });
+
+
+
+</script>
+</body>
+</html>
