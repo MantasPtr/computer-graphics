@@ -22,25 +22,29 @@ function init() {
     scene.add(plane);
     
     const rotationGroup = new THREE.Group();
+    
     const basicMaterial = new THREE.MeshLambertMaterial( {color: 0xff0000} );
+    const baseHeight = 2
+    const armHeight = 10
+    const connectionHeight = 2.5
+    const horizontalArmSafe = 0.5 
+    const armLenght = 10
     
-    const baseGeometry = new THREE.CylinderGeometry(2,4,2,10)
-    
+    const baseGeometry = new THREE.CylinderGeometry(2,4,baseHeight,10)
     const base = new THREE.Mesh( baseGeometry, basicMaterial );
-    base.position.y = 1;
+    base.position.y = baseHeight/2;
     base.castShadow = true; 
     scene.add(base);
     
-    const verticalArmGeo = new THREE.CubeGeometry( 2, 10, 2);
+    const verticalArmGeo = new THREE.CubeGeometry( 2, armHeight, 2);
     const verticalArm = new THREE.Mesh( verticalArmGeo, basicMaterial );
-    verticalArm.position.y = 7;
-    
+    verticalArm.position.y = baseHeight+armHeight/2;
     verticalArm.castShadow = true;
     scene.add(verticalArm);
     
-    const middlePartGeo = new THREE.CubeGeometry( 2.5, 2.5, 4.5);
+    const middlePartGeo = new THREE.CubeGeometry( 2.5, connectionHeight, 4.5);
     const middlePart = new THREE.Mesh( middlePartGeo, basicMaterial );
-    middlePart.position.y = 10;
+    middlePart.position.y = baseHeight+horizontalArmSafe+connectionHeight/2
     middlePart.position.z = 1.1 
     middlePart.castShadow = true;
     scene.add(middlePart)
