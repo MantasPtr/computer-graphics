@@ -10,6 +10,17 @@ function init() {
     const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
     const stats = new Stats();
 
+    const datGuiControls = new function() {
+        this.rotation = 0;
+        this.updown = 0;
+        this.side = 0;
+    }
+
+    const gui = new dat.GUI();
+    gui.add(datGuiControls, 'rotation',0,2*Math.PI);
+    gui.add(datGuiControls, 'updown',0,10);
+    gui.add(datGuiControls, 'side',0,10);
+ 
     initControls(camera, render)
     // create a render and set the size
     const renderer = new THREE.WebGLRenderer();
@@ -22,7 +33,9 @@ function init() {
     scene.add(plane);
     
     const rotationGroup = new THREE.Group();
-    
+    const upDownGroup = new THREE.Group();
+    const sidesGroup = new THREE.Group();
+
     const basicMaterial = new THREE.MeshLambertMaterial( {color: 0xff0000} );
     const baseHeight = 2
     const armHeight = 10
@@ -37,27 +50,31 @@ function init() {
     scene.add(base);
     
     const verticalArmGeo = new THREE.CubeGeometry( 2, armHeight, 2);
-    const verticalArm = new THREE.Mesh( verticalArmGeo, basicMaterial );
+    const verticalArm = new THREE.Mesh( verticalArmGeo, basicMaterial);
     verticalArm.position.y = baseHeight+armHeight/2;
     verticalArm.castShadow = true;
-    scene.add(verticalArm);
+    rotationGroup.add(verticalArm);
     
     const middlePartGeo = new THREE.CubeGeometry( 2.5, connectionHeight, 4.5);
-    const middlePart = new THREE.Mesh( middlePartGeo, basicMaterial );
+    const middlePart = new THREE.Mesh(middlePartGeo, basicMaterial );
     middlePart.position.y = baseHeight+horizontalArmSafe+connectionHeight/2
     middlePart.position.z = 1.1 
     middlePart.castShadow = true;
-    scene.add(middlePart)
+    upDownGroup.add(middlePart)
 
-    const horizontalArmGeo = new THREE.CubeGeometry( 10, 2, 2);
+    const horizontalArmGeo = new THREE.CubeGeometry( armLenght, 2, 2);
     const horizontalArm = new THREE.Mesh( horizontalArmGeo, basicMaterial );
-    horizontalArm.position.y = 10;
+    horizontalArm.position.y = baseHeight+horizontalArmSafe+connectionHeight/2
     horizontalArm.position.z = 2.2
     
     horizontalArm.castShadow = true;
-    scene.add(horizontalArm);
-
-
+    sidesGroup.add(horizontalArm);
+    
+    upDownGroup.add(sidesGroup)
+    rotationGroup.add(upDownGroup)
+    console.log(datGuiControls.rotation)
+    rotationGroup.rotation.x = datGuiControls.rotation;
+    scene.add(rotationGroup)
 
     camera.position.x = -30;
     camera.position.y = 40;
@@ -102,7 +119,7 @@ function initPlane(){
 }
 
 function initControls(camera,listening_function){
-    controls = new THREE.TrackballControls( camera);
+    controls = new THREE.TrackballControls(camera);
 
     controls.rotateSpeed = 1.0;
     controls.zoomSpeed = 1.2;
