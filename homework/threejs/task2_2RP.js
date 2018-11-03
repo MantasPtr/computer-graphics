@@ -4,23 +4,22 @@ window.onload = init
 
 const logs = (a) => {console.log(a); return a;}
 
+const rotationGroup = new THREE.Group();
+const upDownGroup = new THREE.Group();
+const sidesGroup = new THREE.Group();
+const rotationController = new KeyboardController({ step: Math.PI/36, incButton: "1", decButton: "3"})
+
+document.addEventListener('keypress', (event) => {
+    const key = event.key
+    rotationController.handlePress(key)
+  });
+
 function init() {
     const scene = new THREE.Scene();
     // create a camera, which defines where we're looking at.
     const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
     const stats = new Stats();
 
-    const datGuiControls = new function() {
-        this.rotation = 0;
-        this.updown = 0;
-        this.side = 0;
-    }
-
-    const gui = new dat.GUI();
-    gui.add(datGuiControls, 'rotation',0,2*Math.PI);
-    gui.add(datGuiControls, 'updown',0,10);
-    gui.add(datGuiControls, 'side',0,10);
- 
     initControls(camera, render)
     // create a render and set the size
     const renderer = new THREE.WebGLRenderer();
@@ -32,10 +31,6 @@ function init() {
     const plane = initPlane();
     scene.add(plane);
     
-    const rotationGroup = new THREE.Group();
-    const upDownGroup = new THREE.Group();
-    const sidesGroup = new THREE.Group();
-
     const basicMaterial = new THREE.MeshLambertMaterial( {color: 0xff0000} );
     const baseHeight = 2
     const armHeight = 10
@@ -72,8 +67,6 @@ function init() {
     
     upDownGroup.add(sidesGroup)
     rotationGroup.add(upDownGroup)
-    console.log(datGuiControls.rotation)
-    rotationGroup.rotation.x = datGuiControls.rotation;
     scene.add(rotationGroup)
 
     camera.position.x = -30;
@@ -88,13 +81,14 @@ function init() {
     scene.add( spotLight );
 
     // add the output of the renderer to the html element
-    $("#WebGL-output").append(renderer.domElement);
+    document.querySelector("#WebGL-output").append(renderer.domElement);
 
     // call the render function
     animate()
 
-
     function animate() {
+        rotationGroup.rotation.y = rotationController.value;
+        stats.update();
         renderer.render( scene, camera );
         requestAnimationFrame( animate );
         controls.update();
@@ -131,7 +125,5 @@ function initControls(camera,listening_function){
     controls.staticMoving = true;
     controls.dynamicDampingFactor = 0.3;
 
-    controls.keys = [ 65, 83, 68 ];
     controls.addEventListener( 'change', listening_function );
-   
 }
