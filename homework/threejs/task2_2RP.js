@@ -1,5 +1,3 @@
-
-
 window.onload = init
 
 const logs = (a) => {console.log(a); return a;}
