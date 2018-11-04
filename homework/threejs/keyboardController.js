@@ -1,7 +1,7 @@
 const KeyboardController = class KeyboardController{
 
     constructor({min,max,step,incButton, decButton}) {
-        this.value = min ? min : 0;
+        this.value = min && max ? (min+max)/2 : 0;
         this.min = min;
         this.max = max;
         this.step = step;
@@ -11,10 +11,12 @@ const KeyboardController = class KeyboardController{
 
     inc(){
         this.value = this.max ? Math.min(this.value + this.step, this.max) : this.value + this.step
+        console.log(this.value)
     }
 
     dec(){
         this.value = this.min ? Math.max(this.value - this.step, this.min) : this.value - this.step
+        console.log(this.value)
     }
 
     handlePress(key){

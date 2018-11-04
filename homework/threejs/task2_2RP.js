@@ -4,14 +4,33 @@ window.onload = init
 
 const logs = (a) => {console.log(a); return a;}
 
+const baseHeight = 2
+const armHeight = 10
+const connectionHeight = 2.5
+const connectionWidth = 2.5
+const verticalArmSafe = 0.5
+const horizontalArmSafe = 0.5 
+const armLenght = 10
+
+const minConnectionPosY = baseHeight+verticalArmSafe+connectionHeight/2
+const maxConnectionPosY = baseHeight+armHeight-horizontalArmSafe-connectionHeight/2
+
+const minArmPosX = -armLenght/2+horizontalArmSafe+connectionWidth/2
+const maxArmPosX = armLenght/2-horizontalArmSafe-connectionWidth/2
+
+
 const rotationGroup = new THREE.Group();
 const upDownGroup = new THREE.Group();
 const sidesGroup = new THREE.Group();
 const rotationController = new KeyboardController({ step: Math.PI/36, incButton: "1", decButton: "3"})
+const upDownController = new KeyboardController({ min: minConnectionPosY, max: maxConnectionPosY, step: 0.2, incButton: "4", decButton: "6"})
+const sidesController = new KeyboardController({ min: minArmPosX, max: maxArmPosX, step: 0.2, incButton: "7", decButton: "9"})
 
 document.addEventListener('keypress', (event) => {
     const key = event.key
     rotationController.handlePress(key)
+    upDownController.handlePress(key)
+    sidesController.handlePress(key)
   });
 
 function init() {
@@ -20,6 +39,18 @@ function init() {
     const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
     const stats = new Stats();
 
+    const plane = initPlane();
+    scene.add(plane);
+
+    const light = new THREE.PointLight( 0xffffff, 1, 200 );
+    light.position.set( 50, 50, 50 );
+    scene.add(light);
+
+    const spotLight = new THREE.SpotLight( 0xffffff );
+    spotLight.position.set( -40, 40, -10 );
+    spotLight.castShadow = true;
+    scene.add( spotLight );
+
     initControls(camera, render)
     // create a render and set the size
     const renderer = new THREE.WebGLRenderer();
@@ -27,44 +58,57 @@ function init() {
     renderer.setClearColor(new THREE.Color(0xEEEEEE));
     renderer.setSize(window.innerWidth, window.innerHeight);
     renderer.shadowMap.enabled = true;
-    
-    const plane = initPlane();
-    scene.add(plane);
-    
-    const basicMaterial = new THREE.MeshLambertMaterial( {color: 0xff0000} );
-    const baseHeight = 2
-    const armHeight = 10
-    const connectionHeight = 2.5
-    const horizontalArmSafe = 0.5 
-    const armLenght = 10
+  
+    const baseMaterial = new THREE.MeshLambertMaterial( {color: 0xff0000} );
+    const upDownMaterial = new THREE.MeshLambertMaterial( {color: 0xffff00} );
+    const connectionMaterial = new THREE.MeshLambertMaterial( {color: 0x00ff00} );
+    const sidesMaterial = new THREE.MeshLambertMaterial( {color: 0x00ffff});// wireframe: true} );
     
     const baseGeometry = new THREE.CylinderGeometry(2,4,baseHeight,10)
-    const base = new THREE.Mesh( baseGeometry, basicMaterial );
+    const base = new THREE.Mesh( baseGeometry, baseMaterial );
     base.position.y = baseHeight/2;
     base.castShadow = true; 
     scene.add(base);
     
     const verticalArmGeo = new THREE.CubeGeometry( 2, armHeight, 2);
-    const verticalArm = new THREE.Mesh( verticalArmGeo, basicMaterial);
+    const verticalArm = new THREE.Mesh( verticalArmGeo, upDownMaterial);
     verticalArm.position.y = baseHeight+armHeight/2;
     verticalArm.castShadow = true;
     rotationGroup.add(verticalArm);
     
-    const middlePartGeo = new THREE.CubeGeometry( 2.5, connectionHeight, 4.5);
-    const middlePart = new THREE.Mesh(middlePartGeo, basicMaterial );
-    middlePart.position.y = baseHeight+horizontalArmSafe+connectionHeight/2
+    const middlePartGeo = new THREE.CubeGeometry( connectionWidth, connectionHeight, 4.5);
+    const middlePart = new THREE.Mesh(middlePartGeo, connectionMaterial );
     middlePart.position.z = 1.1 
     middlePart.castShadow = true;
     upDownGroup.add(middlePart)
 
     const horizontalArmGeo = new THREE.CubeGeometry( armLenght, 2, 2);
-    const horizontalArm = new THREE.Mesh( horizontalArmGeo, basicMaterial );
-    horizontalArm.position.y = baseHeight+horizontalArmSafe+connectionHeight/2
+    const horizontalArm = new THREE.Mesh( horizontalArmGeo, sidesMaterial );
     horizontalArm.position.z = 2.2
-    
     horizontalArm.castShadow = true;
     sidesGroup.add(horizontalArm);
     
+    const gripBaseGeo = new THREE.CubeGeometry( 1, 2, 4);
+    const gripBase = new THREE.Mesh( gripBaseGeo, sidesMaterial );
+    gripBase.position.z = 2.2
+    gripBase.position.x = armLenght/2+0.5 
+    gripBase.castShadow = true;
+    sidesGroup.add(gripBase);
+
+    const leftGripBase = new THREE.CubeGeometry( 3, 1.5, 0.5);
+    const leftGrip = new THREE.Mesh( leftGripBase, sidesMaterial );
+    leftGrip.position.z = 2.2-1.5
+    leftGrip.position.x = armLenght/2+2.5
+    leftGrip.castShadow = true;
+    sidesGroup.add(leftGrip);
+
+    const rightGripBase = new THREE.CubeGeometry( 3, 1.5, 0.5);
+    const rightGrip = new THREE.Mesh( rightGripBase, sidesMaterial );
+    rightGrip.position.z = 2.2+1.5
+    rightGrip.position.x = armLenght/2+2.5
+    rightGrip.castShadow = true;
+    sidesGroup.add(rightGrip);
+
     upDownGroup.add(sidesGroup)
     rotationGroup.add(upDownGroup)
     scene.add(rotationGroup)
@@ -74,20 +118,14 @@ function init() {
     camera.position.z = 30;
     camera.lookAt(scene.position);
 
-    // add spotlight for the shadows
-    const spotLight = new THREE.SpotLight( 0xffffff );
-    spotLight.position.set( -40, 60, -10 );
-    spotLight.castShadow = true;
-    scene.add( spotLight );
-
-    // add the output of the renderer to the html element
     document.querySelector("#WebGL-output").append(renderer.domElement);
 
-    // call the render function
     animate()
 
     function animate() {
         rotationGroup.rotation.y = rotationController.value;
+        upDownGroup.position.y = upDownController.value;
+        sidesGroup.position.x = sidesController.value;
         stats.update();
         renderer.render( scene, camera );
         requestAnimationFrame( animate );
