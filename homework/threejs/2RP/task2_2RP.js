@@ -55,9 +55,9 @@ function init() {
     renderer.shadowMap.enabled = true;
   
     const baseMaterial = new THREE.MeshLambertMaterial( {color: 0xff0000} );
-    const material1 = new THREE.MeshLambertMaterial( {color: 0xffff00} );
-    const material2 = new THREE.MeshLambertMaterial( {color: 0x00ff00} );
-    const material3 = new THREE.MeshLambertMaterial( {color: 0x00ffff});// wireframe: true} );
+    const material1 = new THREE.MeshLambertMaterial( {color: 0x00ff00} );
+    const material2 = new THREE.MeshLambertMaterial( {color: 0xff0000} );
+    const material3 = new THREE.MeshLambertMaterial( {color: 0x00ff00});// wireframe: true} );
     
     const baseGeometry = new THREE.CylinderGeometry(2,4,baseHeight,10)
     const base = new THREE.Mesh( baseGeometry, baseMaterial );

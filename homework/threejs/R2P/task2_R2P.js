@@ -58,9 +58,9 @@ function init() {
     renderer.shadowMap.enabled = true;
   
     const baseMaterial = new THREE.MeshLambertMaterial( {color: 0xff0000} );
-    const upDownMaterial = new THREE.MeshLambertMaterial( {color: 0xffff00} );
-    const connectionMaterial = new THREE.MeshLambertMaterial( {color: 0x00ff00} );
-    const sidesMaterial = new THREE.MeshLambertMaterial( {color: 0x00ffff});// wireframe: true} );
+    const upDownMaterial = new THREE.MeshLambertMaterial( {color: 0x00ff00} );
+    const connectionMaterial = new THREE.MeshLambertMaterial( {color: 0xff0000} );
+    const sidesMaterial = new THREE.MeshLambertMaterial( {color: 0x00ff00});// wireframe: true} );
     
     const baseGeometry = new THREE.CylinderGeometry(2,4,baseHeight,10)
     const base = new THREE.Mesh( baseGeometry, baseMaterial );
@@ -80,32 +80,40 @@ function init() {
     middlePart.castShadow = true;
     rotationGroup2.add(middlePart)
 
-    const horizontalArmGeo = new THREE.CubeGeometry( armLenght, 2, 2);
+    const horizontalArmGeo = new THREE.CubeGeometry( armLenght, 1, 1);
     const horizontalArm = new THREE.Mesh( horizontalArmGeo, sidesMaterial );
     horizontalArm.position.z = 2.2
     horizontalArm.castShadow = true;
     armGroup.add(horizontalArm);
     
-    const gripBaseGeo = new THREE.CubeGeometry( 1, 2, 4);
-    const gripBase = new THREE.Mesh( gripBaseGeo, sidesMaterial );
-    gripBase.position.z = 2.2
-    gripBase.position.x = armLenght/2+0.5 
-    gripBase.castShadow = true;
-    armGroup.add(gripBase);
+    const gripB =  grip()
+    gripB.position.z = 2.95
+    gripB.position.y = 0.5
+    gripB.position.x = armLenght/2+0.2 
+    gripB.castShadow = true;
+    armGroup.add(gripB);
 
-    const leftGripBase = new THREE.CubeGeometry( 3, 1.5, 0.5);
-    const leftGrip = new THREE.Mesh( leftGripBase, sidesMaterial );
-    leftGrip.position.z = 2.2-1.5
-    leftGrip.position.x = armLenght/2+2.5
-    leftGrip.castShadow = true;
-    armGroup.add(leftGrip);
 
-    const rightGripBase = new THREE.CubeGeometry( 3, 1.5, 0.5);
-    const rightGrip = new THREE.Mesh( rightGripBase, sidesMaterial );
-    rightGrip.position.z = 2.2+1.5
-    rightGrip.position.x = armLenght/2+2.5
-    rightGrip.castShadow = true;
-    armGroup.add(rightGrip);
+    // const gripBaseGeo = new THREE.CubeGeometry( 1, 2, 4);
+    // const gripBase = new THREE.Mesh( gripBaseGeo, sidesMaterial );
+    // gripBase.position.z = 2.2
+    // gripBase.position.x = armLenght/2+0.5 
+    // gripBase.castShadow = true;
+    // armGroup.add(gripBase);
+
+    // const leftGripBase = new THREE.CubeGeometry( 3, 1.5, 0.5);
+    // const leftGrip = new THREE.Mesh( leftGripBase, sidesMaterial );
+    // leftGrip.position.z = 2.2-1.5
+    // leftGrip.position.x = armLenght/2+2.5
+    // leftGrip.castShadow = true;
+    // armGroup.add(leftGrip);
+
+    // const rightGripBase = new THREE.CubeGeometry( 3, 1.5, 0.5);
+    // const rightGrip = new THREE.Mesh( rightGripBase, sidesMaterial );
+    // rightGrip.position.z = 2.2+1.5
+    // rightGrip.position.x = armLenght/2+2.5
+    // rightGrip.castShadow = true;
+    // armGroup.add(rightGrip);
 
     rotationGroup2.add(armGroup)
     rotationGroup1.add(rotationGroup2)
@@ -162,4 +170,38 @@ function initControls(camera,listening_function){
     controls.dynamicDampingFactor = 0.3;
 
     controls.addEventListener( 'change', listening_function );
+}
+
+function grip() {
+
+    const width = 3;
+    const length = 1.5;
+
+    const shape = new THREE.Shape();
+    shape.moveTo( 0,0 );
+    shape.lineTo( 0, width );
+    shape.lineTo( length/8,   width)
+    shape.lineTo( length/8,   width/4)
+    shape.lineTo( length-length/8, width/4)
+    shape.lineTo( length-length/8, width);
+    shape.lineTo( length, width);
+    shape.lineTo( length, 0 );
+    shape.lineTo( 0, 0 );
+
+
+    const extrudeSettings = {
+    	steps: 2,
+    	depth: 1,
+    	bevelEnabled: true,
+    	bevelThickness: 0.1,
+    	bevelSize: 0.2,
+    	bevelSegments: 2    
+    };
+
+    const geometry = new THREE.ExtrudeBufferGeometry( shape, extrudeSettings );
+    const material = new THREE.MeshLambertMaterial( { color: 0x0fff00 } );
+    const mesh = new THREE.Mesh( geometry, material ) ;
+    mesh.rotation.x = Math.PI/2
+    mesh.rotation.z = -Math.PI/2
+    return mesh   
 }
