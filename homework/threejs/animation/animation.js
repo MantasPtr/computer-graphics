@@ -24,9 +24,9 @@ function init() {
     initControls(camera)
 
     addLight(THREE, scene)
-    addBoxes(scene)
+    const {leftBox, rightBox} = addBoxes(scene)
 
-    const [rotationGroup, upDownGroup, armGroup, keg] = initRobot(scene)
+    const [rotationGroup, upDownGroup, armGroup, keg, box] = initRobot(scene)
 
     camera.position.x = -20;
     camera.position.y = 50;
@@ -46,6 +46,10 @@ function init() {
         topKeg.visible = positions.kegs[0]
         keg.visible = positions.kegs[1]
         bottomKeg.visible = positions.kegs[2]
+        leftBox.visible = positions.boxes[0]
+        box.visible = positions.boxes[1]
+        rightBox.visible = positions.boxes[2]
+        //logs(box.getWorldPosition())
         renderer.render(scene, camera);
         requestAnimationFrame(animate);
         controls.update();
@@ -59,30 +63,30 @@ const sideMin = -armLenght/2+horizontalArmSafe+connectionWidth/2
 const sideMax = armLenght/2-horizontalArmSafe-connectionWidth/2
 
 const keyFrame = [
-    {rotation:  1*Math.PI/4, connectionY: upMin, armX: sideMin, time: 2000, kegs: [  true, false, false]},
-    {rotation:  1*Math.PI/4, connectionY: upMin, armX: sideMax, time: 2000, kegs: [  false, true, false]},
-    {rotation:  1*Math.PI/4, connectionY: upMax, armX: sideMin, time: 2000, kegs: [  false, true, false]},
-    {rotation:  5*Math.PI/4, connectionY: upMax, armX: sideMin, time: 2000, kegs: [  false, true, false]},
-    {rotation:  5*Math.PI/4, connectionY: upMin, armX: sideMax, time: 2000, kegs: [  false, false, true]},
-    {rotation:  5*Math.PI/4, connectionY: upMin, armX: sideMin, time: 1000, kegs: [  false, false, true]},
-    {rotation:  3*Math.PI/4, connectionY: upMin, armX: sideMin, time: 2000, kegs: [  false, false, true]},
-    {rotation:  3*Math.PI/4, connectionY: upMin, armX: sideMax, time: 2000, kegs: [  false, false, true]},
-    {rotation:  3*Math.PI/4, connectionY: upMax, armX: sideMin, time: 2000, kegs: [  false, false, true]},
-    {rotation:  7*Math.PI/4, connectionY: upMax, armX: sideMin, time: 2000, kegs: [  false, false, true]},
-    {rotation:  7*Math.PI/4, connectionY: upMin, armX: sideMax, time: 2000, kegs: [  false, false, true]},
-    {rotation:  7*Math.PI/4, connectionY: upMin, armX: sideMin, time: 1000, kegs: [  false, false, true]},
-    {rotation:  5*Math.PI/4, connectionY: upMin, armX: sideMin, time: 2000, kegs: [  false, false, true]},
-    {rotation:  5*Math.PI/4, connectionY: upMin, armX: sideMax, time: 2000, kegs: [  false, true, false]},
-    {rotation:  5*Math.PI/4, connectionY: upMax, armX: sideMin, time: 2000, kegs: [  false, true, false]},
-    {rotation:  1*Math.PI/4, connectionY: upMax, armX: sideMin, time: 2000, kegs: [  false, true, false]},
-    {rotation:  1*Math.PI/4, connectionY: upMin, armX: sideMax, time: 2000, kegs: [  true, false, false]},
-    {rotation:  1*Math.PI/4, connectionY: upMin, armX: sideMin, time: 1000, kegs: [  true, false, false]},
-    {rotation: -1*Math.PI/4, connectionY: upMin, armX: sideMin, time: 2000, kegs: [  true, false, false]},
-    {rotation: -1*Math.PI/4, connectionY: upMin, armX: sideMax, time: 2000, kegs: [  true, false, false]},
-    {rotation: -1*Math.PI/4, connectionY: upMax, armX: sideMin, time: 2000, kegs: [  true, false, false]},
-    {rotation:  3*Math.PI/4, connectionY: upMax, armX: sideMin, time: 2000, kegs: [  true, false, false]},
-    {rotation:  3*Math.PI/4, connectionY: upMin, armX: sideMax, time: 2000, kegs: [  true, false, false]},
-    {rotation:  3*Math.PI/4, connectionY: upMin, armX: sideMin, time: 1000, kegs: [  true, false, false]},
+    {rotation:  1*Math.PI/4, connectionY: upMin, armX: sideMin, time: 2000, kegs: [  true, false, false], boxes: [true, false, false]},
+    {rotation:  1*Math.PI/4, connectionY: upMin, armX: sideMax, time: 2000, kegs: [  false, true, false], boxes: [true, false, false]},
+    {rotation:  1*Math.PI/4, connectionY: upMax, armX: sideMin, time: 2000, kegs: [  false, true, false], boxes: [true, false, false]},
+    {rotation:  5*Math.PI/4, connectionY: upMax, armX: sideMin, time: 2000, kegs: [  false, true, false], boxes: [true, false, false]},
+    {rotation:  5*Math.PI/4, connectionY: upMin, armX: sideMax, time: 2000, kegs: [  false, false, true], boxes: [true, false, false]},
+    {rotation:  5*Math.PI/4, connectionY: upMin, armX: sideMin, time: 1000, kegs: [  false, false, true], boxes: [true, false, false]},
+    {rotation:  3*Math.PI/4, connectionY: upMin, armX: sideMin, time: 2000, kegs: [  false, false, true], boxes: [true, false, false]},
+    {rotation:  3*Math.PI/4, connectionY: upMin, armX: sideMax, time: 2000, kegs: [  false, false, true], boxes: [false, true, false]},
+    {rotation:  3*Math.PI/4, connectionY: upMax, armX: sideMin, time: 2000, kegs: [  false, false, true], boxes: [false, true, false]},
+    {rotation:  7*Math.PI/4, connectionY: upMax, armX: sideMin, time: 2000, kegs: [  false, false, true], boxes: [false, true, false]},
+    {rotation:  7*Math.PI/4, connectionY: upMin, armX: sideMax, time: 2000, kegs: [  false, false, true], boxes: [false, false, true]},
+    {rotation:  7*Math.PI/4, connectionY: upMin, armX: sideMin, time: 1000, kegs: [  false, false, true], boxes: [false, false, true]},
+    {rotation:  5*Math.PI/4, connectionY: upMin, armX: sideMin, time: 2000, kegs: [  false, false, true], boxes: [false, false, true]},
+    {rotation:  5*Math.PI/4, connectionY: upMin, armX: sideMax, time: 2000, kegs: [  false, true, false], boxes: [false, false, true]},
+    {rotation:  5*Math.PI/4, connectionY: upMax, armX: sideMin, time: 2000, kegs: [  false, true, false], boxes: [false, false, true]},
+    {rotation:  1*Math.PI/4, connectionY: upMax, armX: sideMin, time: 2000, kegs: [  false, true, false], boxes: [false, false, true]},
+    {rotation:  1*Math.PI/4, connectionY: upMin, armX: sideMax, time: 2000, kegs: [  true, false, false], boxes: [false, false, true]},
+    {rotation:  1*Math.PI/4, connectionY: upMin, armX: sideMin, time: 1000, kegs: [  true, false, false], boxes: [false, false, true]},
+    {rotation: -1*Math.PI/4, connectionY: upMin, armX: sideMin, time: 2000, kegs: [  true, false, false], boxes: [false, false, true]},
+    {rotation: -1*Math.PI/4, connectionY: upMin, armX: sideMax, time: 2000, kegs: [  true, false, false], boxes: [false, true, false]},
+    {rotation: -1*Math.PI/4, connectionY: upMax, armX: sideMin, time: 2000, kegs: [  true, false, false], boxes: [false, true, false]},
+    {rotation:  3*Math.PI/4, connectionY: upMax, armX: sideMin, time: 2000, kegs: [  true, false, false], boxes: [false, true, false]},
+    {rotation:  3*Math.PI/4, connectionY: upMin, armX: sideMax, time: 2000, kegs: [  true, false, false], boxes: [true, false, false]},
+    {rotation:  3*Math.PI/4, connectionY: upMin, armX: sideMin, time: 1000, kegs: [  true, false, false], boxes: [true, false, false]},
 ]
 
 let currentKeyFrameIndex=0;
@@ -124,7 +128,7 @@ function animDiff(current, next, multi){
     rotation =  current.rotation + multi * (next.rotation-current.rotation)
     connectionY = current.connectionY + multi * (next.connectionY-current.connectionY)
     armX = current.armX + multi * (next.armX-current.armX)
-    return {rotation,connectionY, armX, kegs: current.kegs}
+    return {rotation,connectionY, armX, kegs: current.kegs, boxes: current.boxes}
 }
 
 
@@ -221,11 +225,20 @@ function initRobot(scene) {
     keg.position.x = armLenght / 2+4
     armGroup.add(keg);
 
+    const box = newBox();
+    box.position.z = 2.2
+    box.position.y = 1
+    box.position.x = armLenght / 2+3.5
+    box.rotation.y = 0
+    armGroup.add(box);
+
+
+
     upDownGroup.add(armGroup)
     upDownGroup.position.y = baseHeight + horizontalArmSafe + connectionWidth / 2
     rotationGroup.add(upDownGroup)
     scene.add(rotationGroup)
-    return [rotationGroup, upDownGroup, armGroup, keg]
+    return [rotationGroup, upDownGroup, armGroup, keg, box]
 }
 
 
@@ -321,17 +334,22 @@ function newKeg() {
 }
 
 function addBoxes(scene){
-    rightBox = newBox()
-    rightBox.position.z = -13.576;
-    rightBox.position.x = -10.465;
-    rightBox.position.y = 3+2
+    const rightBox = newBox()
+    rightBox.position.z = 13.223;
+    rightBox.position.x = 10.112;
+    rightBox.position.y = 5
     scene.add(rightBox)
-
+    const leftBox = newBox()
+    leftBox.position.z = -13.223;
+    leftBox.position.x = -10.112;
+    leftBox.position.y = 5
+    scene.add(leftBox)
+    return {leftBox, rightBox};
 }
 
 function newBox() {
     const material = new THREE.MeshLambertMaterial( { color: 0xc45f25 } );
-    const cubeGeo = new THREE.CubeGeometry(4, 3.5 , 4);
+    const cubeGeo = new THREE.CubeGeometry(3.3, 4 , 3.3);
     const cube = new THREE.Mesh(cubeGeo, material);
     cube.rotation.y = Math.PI/4
     cube.castShadow = true;
