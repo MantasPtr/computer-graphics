@@ -330,20 +330,42 @@ function newKeg() {
     const geometry = new THREE.LatheGeometry( points );
     const material = new THREE.MeshLambertMaterial( { color: 0xc45f25 } );
     const vaseMesh = new THREE.Mesh( geometry, material );
+    vaseMesh.castShadow = true
     return vaseMesh
 }
 
 function addBoxes(scene){
+    const baseMaterial = new THREE.MeshLambertMaterial({ color: 0xff2222 });
+    const leftBox = newBox()
+    const boxBaseGeometry = new THREE.CubeGeometry(7, 3.5, 4); 
+    const leftBase = new THREE.Mesh(boxBaseGeometry, baseMaterial);
+    leftBase.rotation.y = Math.PI /4
+    leftBase.position.y = 3.5 / 2;
+    leftBase.castShadow = true;
+    leftBase.position.x = -10.112;
+    leftBase.position.z = -13.223;
+    scene.add(leftBase)
+
+    leftBox.position.x = -10.112;
+    leftBox.position.z = -13.223;
+    leftBox.position.y = 5
+    scene.add(leftBox)
+    
+    const rightBase = new THREE.Mesh(boxBaseGeometry, baseMaterial);
+    rightBase.rotation.y = Math.PI /4
+    rightBase.position.y = 3.5 / 2;
+    rightBase.castShadow = true;
+    rightBase.position.x = 10.112;
+    rightBase.position.z = 13.223;
+    scene.add(rightBase)
+
+    
     const rightBox = newBox()
     rightBox.position.z = 13.223;
     rightBox.position.x = 10.112;
     rightBox.position.y = 5
     scene.add(rightBox)
-    const leftBox = newBox()
-    leftBox.position.z = -13.223;
-    leftBox.position.x = -10.112;
-    leftBox.position.y = 5
-    scene.add(leftBox)
+    
     return {leftBox, rightBox};
 }
 
