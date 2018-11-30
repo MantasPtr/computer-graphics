@@ -66,15 +66,17 @@ function makeStone() {
     const height = 40
     const diameter = 20
     const radius = diameter /2
-
+    const pointCount = 100000
 
     const points =[]
-    for (let i = 0 ;i<1000;i++) {
+    for (let i = 0 ;i<pointCount;i++) {
         points.push(generatePoint())
     }
-    const geometry = new THREE.ConvexGeometry( points );
-    const material = new THREE.MeshLambertMaterial( {color: 0x00ff00} );
+    const geometry = new THREE.CubeGeometry(5, 5, 5)//new THREE.ConvexGeometry( points );
+    let material = new THREE.MeshPhongMaterial(); 
+    material.map = getTexture()
     const mesh = new THREE.Mesh( geometry, material );
+    return mesh
 
     function isInside(x,y,z) {
         return Math.pow(x,2) + Math.pow(z,2) <= Math.pow(radius,2)/(2*Math.pow(height,2)) * Math.pow(y-height,2)
@@ -96,6 +98,8 @@ function makeStone() {
         else return generatePoint()
     }
 
-    return mesh
+    function getTexture() {    
+        const loader = new THREE.TextureLoader();
+        return loader.load("../texturing/assets/chess.png", (t) => {texture = t}, undefined, console.log )
+    }
 }
-
