@@ -36,26 +36,26 @@ export function initRenderer() {
 }
 
 export function addLight(scene) {
-    const ambientLight = new THREE.AmbientLight( 0xffffff,0.2 )
+    const ambientLight = new THREE.AmbientLight( 0xffffff,1 )
     scene.add(ambientLight)
 
-    const spotLight = new THREE.SpotLight(0xffffff,0.5);
-    spotLight.position.set(-50, -50, -50);
-    spotLight.castShadow = true;
-    scene.add(spotLight);
+    // const spotLight = new THREE.SpotLight(0xffffff,0.5);
+    // spotLight.position.set(-50, -50, -50);
+    // spotLight.castShadow = true;
+    // scene.add(spotLight);
 
-    const spotLight2 = new THREE.SpotLight(0xffffff,1);
-    spotLight2.position.set(50, 0, -50);
-    spotLight2.castShadow = true;
-    scene.add(spotLight2);
+    // const spotLight2 = new THREE.SpotLight(0xffffff,1);
+    // spotLight2.position.set(50, 0, -50);
+    // spotLight2.castShadow = true;
+    // scene.add(spotLight2);
 
-    const spotLight3 = new THREE.SpotLight(0xffffff,0.5);
-    spotLight3.position.set(50, 50, 50);
-    spotLight3.castShadow = false;
-    scene.add(spotLight3);
+    // const spotLight3 = new THREE.SpotLight(0xffffff,0.5);
+    // spotLight3.position.set(50, 50, 50);
+    // spotLight3.castShadow = false;
+    // scene.add(spotLight3);
 
-    const spotLight4 = new THREE.SpotLight(0xffffff,0.5);
-    spotLight4.position.set(-50, 0, 50);
-    spotLight4.castShadow = false;
-    scene.add(spotLight4);
+    // const spotLight4 = new THREE.SpotLight(0xffffff,0.5);
+    // spotLight4.position.set(-50, 0, 50);
+    // spotLight4.castShadow = false;
+    // scene.add(spotLight4);
 }

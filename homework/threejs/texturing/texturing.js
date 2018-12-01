@@ -11,7 +11,8 @@ function init() {
     scene.add(makeStone());
 
     animate()
-
+    const axesHelper = new THREE.AxesHelper( 50 );
+    scene.add( axesHelper );
     function animate(time) {
         renderer.render(scene, camera);
         requestAnimationFrame(animate);
@@ -22,7 +23,7 @@ function init() {
 function makeStone() {
     const height = 40
     const diameter = 20
-    const pointCount = 10
+    const pointCount = 10000
 
     const generator = new SlicedConePointGenerator(height,diameter);
     const pointsCoordinates = generator.generateAllPointsCoordinates(pointCount);
@@ -33,15 +34,20 @@ function makeStone() {
     material.map = getTexture("chess.png")
     logs(geometry.vertices)
     logs(geometry.faces)
-    geometry.faceVertexUvs[0][0] = [new THREE.Vector2(0, .666), new THREE.Vector2(.5, .666), new THREE.Vector2(.5, 1), new THREE.Vector2(0, 1)];
+    geometry.faces.forEach((face, idx) => {
+        const [vA,uA] = countUV(geometry.vertices[face.a], height)
+        const [vB,uB] = countUV(geometry.vertices[face.b], height)
+        const [vC,uC] = countUV(geometry.vertices[face.c], height)
+        geometry.faceVertexUvs[0][idx] = [new THREE.Vector2(vA, uA), new THREE.Vector2(vB, uB), new THREE.Vector2(vC, uC)];
+    });
     const mesh = new THREE.Mesh( geometry, material );
     return mesh
 
 }
 
-function countUV(x,y,z, height) {
+function countUV({x,y,z}, height) {
     const v = y/height + 0.5
-    const u = Math.atan2(x, y)/(2*Math.PI)
+    const u = Math.atan2(x, z)/(2*Math.PI)+0.5
     return [u,v]
 }
 
