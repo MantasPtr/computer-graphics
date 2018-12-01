@@ -1,24 +1,17 @@
+import SlicedConePointGenerator from "./pointGeneration.js"
+import {initControls, addCamera, addLight, initRenderer} from "./sceneUtils.js"
 window.onload = init
-
-const logs = (a) => { console.log(a); return a; }
 
 function init() {
     const scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
-    camera.position.x = -20;
-    camera.position.y = 50;
-    camera.position.z = 20;
-    camera.lookAt(scene.position);
-
+    const camera = addCamera(scene);
     const renderer = initRenderer();
+    addLight(scene)
+    const controls = initControls(camera)
     scene.add(makeStone());
 
-    addLight(THREE, scene)
-    const controls = initControls(camera)
     animate()
 
-    document.querySelector("#WebGL-output").append(renderer.domElement);
-    
     function animate(time) {
         renderer.render(scene, camera);
         requestAnimationFrame(animate);
@@ -26,80 +19,35 @@ function init() {
     }
 }
 
-function initRenderer() {
-    const renderer = new THREE.WebGLRenderer();
-    renderer.setClearColor(new THREE.Color(0xEEEEEE));
-    renderer.setSize(window.innerWidth, window.innerHeight);
-    renderer.shadowMap.enabled = true;
-    return renderer;
-}
-
-function initControls(camera) {
-    const controls = new THREE.TrackballControls(camera);
-
-    controls.rotateSpeed = 1.0;
-    controls.zoomSpeed = 1.2;
-    controls.panSpeed = 0.8;
-
-    controls.noZoom = false;
-    controls.noPan = false;
-
-    controls.staticMoving = true;
-    controls.dynamicDampingFactor = 0.3;
-    return controls
-}
-
-function addLight(THREE, scene) {
-    const spotLight = new THREE.SpotLight(0xffffff);
-    spotLight.position.set(-50, 50, -10);
-    spotLight.castShadow = true;
-    scene.add(spotLight);
-
-    const spotLight2 = new THREE.SpotLight(0x888888);
-    spotLight2.position.set(50, -50, 10);
-    spotLight2.castShadow = false;
-    scene.add(spotLight2);
-}
-
 function makeStone() {
-    
     const height = 40
     const diameter = 20
-    const radius = diameter /2
-    const pointCount = 100000
+    const pointCount = 10
 
-    const points =[]
-    for (let i = 0 ;i<pointCount;i++) {
-        points.push(generatePoint())
-    }
-    const geometry = new THREE.CubeGeometry(5, 5, 5)//new THREE.ConvexGeometry( points );
+    const generator = new SlicedConePointGenerator(height,diameter);
+    const pointsCoordinates = generator.generateAllPointsCoordinates(pointCount);
+    const geometryPoints = pointsCoordinates.map(([x,y,z]) => new THREE.Vector3(x,y,z))
+
+    const geometry = new THREE.ConvexGeometry(geometryPoints);
     let material = new THREE.MeshPhongMaterial(); 
-    material.map = getTexture()
+    material.map = getTexture("chess.png")
+    logs(geometry.vertices)
+    logs(geometry.faces)
+    geometry.faceVertexUvs[0][0] = [new THREE.Vector2(0, .666), new THREE.Vector2(.5, .666), new THREE.Vector2(.5, 1), new THREE.Vector2(0, 1)];
     const mesh = new THREE.Mesh( geometry, material );
     return mesh
 
-    function isInside(x,y,z) {
-        return Math.pow(x,2) + Math.pow(z,2) <= Math.pow(radius,2)/(2*Math.pow(height,2)) * Math.pow(y-height,2)
-    }
-
-    function generatePointCoordinates() {
-        const x = Math.random() * diameter - radius
-        const y = Math.random() * height - height/2
-        const z = Math.random() * diameter - radius
-        return [x,y,z]
-    }
-
-    function generatePoint(){
-        const [x,y,z] = generatePointCoordinates()
-        if (isInside(x,y,z)) {
-            // console.log(x,y,z)
-            return new THREE.Vector3(x,y,z)
-        }
-        else return generatePoint()
-    }
-
-    function getTexture() {    
-        const loader = new THREE.TextureLoader();
-        return loader.load("../texturing/assets/chess.png", (t) => {texture = t}, undefined, console.log )
-    }
 }
+
+function countUV(x,y,z, height) {
+    const v = y/height + 0.5
+    const u = Math.atan2(x, y)/(2*Math.PI)
+    return [u,v]
+}
+
+function getTexture(name) {    
+    const loader = new THREE.TextureLoader();
+    return loader.load("../texturing/assets/" + name, undefined, undefined, console.log )
+}
+
+const logs = (a) => { console.log(a); return a; }
