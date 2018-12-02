@@ -8,7 +8,8 @@ function init() {
     const renderer = initRenderer();
     addLight(scene)
     const controls = initControls(camera)
-    scene.add(makeStone());
+    const figure = makeStone()
+    scene.add(figure);
 
     animate()
     const axesHelper = new THREE.AxesHelper( 50 );
@@ -23,7 +24,7 @@ function init() {
 function makeStone() {
     const height = 40
     const diameter = 20
-    const pointCount = 10000
+    const pointCount = 100000
 
     const generator = new SlicedConePointGenerator(height,diameter);
     const pointsCoordinates = generator.generateAllPointsCoordinates(pointCount);
@@ -32,15 +33,24 @@ function makeStone() {
     const geometry = new THREE.ConvexGeometry(geometryPoints);
     let material = new THREE.MeshPhongMaterial(); 
     material.map = getTexture("chess.png")
-    logs(geometry.vertices)
-    logs(geometry.faces)
+
     geometry.faces.forEach((face, idx) => {
-        const [vA,uA] = countUV(geometry.vertices[face.a], height)
-        const [vB,uB] = countUV(geometry.vertices[face.b], height)
-        const [vC,uC] = countUV(geometry.vertices[face.c], height)
-        geometry.faceVertexUvs[0][idx] = [new THREE.Vector2(vA, uA), new THREE.Vector2(vB, uB), new THREE.Vector2(vC, uC)];
-    });
+        const A = geometry.vertices[face.a]
+        const B = geometry.vertices[face.b]
+        const C = geometry.vertices[face.c]
+
+        let [vA,uA] = countUV(A, height)
+        let [vB,uB] = countUV(B, height)
+        let [vC,uC] = countUV(C, height)
+        if ( hasDifferentSigns(A.x,B.x,C.x) && (A.z<0 || B.z<0 || C.z<0 )) {
+            if (A.x < 0) vA += 1
+            if (B.x < 0) vB += 1
+            if (C.x < 0) vC += 1
+        }
+        geometry.faceVertexUvs[0][idx] = [new THREE.Vector2(vA/2, uA), new THREE.Vector2(vB/2, uB), new THREE.Vector2(vC/2, uC)];
+        });
     const mesh = new THREE.Mesh( geometry, material );
+   
     return mesh
 
 }
@@ -51,9 +61,16 @@ function countUV({x,y,z}, height) {
     return [u,v]
 }
 
+function hasDifferentSigns(a,b,c) {
+    return !((a > 0 && b > 0 && c >0) || (a < 0 && b < 0 && c < 0)) 
+}
+
 function getTexture(name) {    
     const loader = new THREE.TextureLoader();
-    return loader.load("../texturing/assets/" + name, undefined, undefined, console.log )
+    const texture = loader.load("../texturing/assets/" + name, undefined, undefined, console.log )
+    texture.repeat.set(2,1);
+    texture.wrapS = THREE.RepeatWrapping;
+    return texture
 }
 
 const logs = (a) => { console.log(a); return a; }
