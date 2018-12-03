@@ -38,7 +38,7 @@ function makeStone() {
         const A = geometry.vertices[face.a]
         const B = geometry.vertices[face.b]
         const C = geometry.vertices[face.c]
-
+    
         let [vA,uA] = countUV(A, height)
         let [vB,uB] = countUV(B, height)
         let [vC,uC] = countUV(C, height)
