@@ -238,3 +238,28 @@ function newBox() {
     return cube;
 }
 
+export function newCameraMesh() {
+    const mesh = new THREE.Group()
+    const material = new THREE.MeshLambertMaterial( { color: 0x888888 } );
+    const cubeGeo = new THREE.CubeGeometry(4, 2, 2);
+    const cube = new THREE.Mesh(cubeGeo, material);
+    cube.position.z = -1.75
+    const smallCubeGeo = new THREE.CubeGeometry(0.5, 0.5, 0.5);
+    const smallCubeMaterial = new THREE.MeshLambertMaterial( { color: 0x880000 } );
+   
+    const smallCube = new THREE.Mesh(smallCubeGeo, smallCubeMaterial);
+    smallCube.position.y = 1.25
+    smallCube.position.x = 1 
+    smallCube.position.z = -1.75
+    const cylGeo = new THREE.CylinderGeometry( 1, 1, 1.5, 32 );
+    const cyl = new THREE.Mesh(cylGeo, material);
+    cyl.rotation.x = Math.PI/2
+    cyl.position.z = 1.75 - 1.75
+
+    
+    mesh.add(smallCube)
+    mesh.add(cube)
+    mesh.add(cyl)
+    
+    return mesh
+}
