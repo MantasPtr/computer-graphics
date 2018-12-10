@@ -67,7 +67,7 @@ function init() {
     camera3.position.y = 20;
     camera3.position.z = -5.798;
 
-    const cameraHelper = new THREE.CameraHelper(camera3);
+    const cameraHelper = new THREE.CameraHelper(camera2);
 
     scene.add(cameraHelper)
     camera3.lookAt(new THREE.Vector3(-10,10,-10))
@@ -116,7 +116,7 @@ function init() {
         const xDiff = Math.abs(keg.getWorldPosition().x - camera3.position.x)
         const zDiff = Math.abs(keg.getWorldPosition().z - camera3.position.z)
         const diff = Math.sqrt(Math.pow(xDiff,2) + Math.pow(zDiff,2))
-        const threshold = 5
+        const threshold = 8
         if (diff < threshold) {   
             const angle = (diff/threshold)
             camera3.up = new THREE.Vector3(0,angle,angle-1)
