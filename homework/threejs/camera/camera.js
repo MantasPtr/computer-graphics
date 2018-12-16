@@ -30,6 +30,7 @@ class Controls {
 const camera1 = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 0.1, 200);
 const camera2 = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 1, 110);
 const camera3 = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 0.1, 200);
+let kegPosition = new THREE.Vector3()
 
 const doolyZoomHeight = 20
 function init() {
@@ -98,7 +99,8 @@ function init() {
     function update1stCamera (){
         camera1.fov = controls.fov
         camera1.updateProjectionMatrix() // update fov  
-        cameraMesh.lookAt(keg.getWorldPosition())
+        keg.getWorldPosition(kegPosition)
+        cameraMesh.lookAt(kegPosition)
     }
     function update2ndCamera (){
         const distance = controls.dollyZoomDistance
@@ -112,14 +114,16 @@ function init() {
         cameraHelper.update()
     }
     function update3rdCamera (){
-        camera3.lookAt(keg.getWorldPosition())
-        const xDiff = Math.abs(keg.getWorldPosition().x - camera3.position.x)
-        const zDiff = Math.abs(keg.getWorldPosition().z - camera3.position.z)
+        keg.getWorldPosition(kegPosition)
+        camera3.lookAt(kegPosition)
+        const xDiff = Math.abs(kegPosition.x - camera3.position.x)
+        const zDiff = Math.abs(kegPosition.z - camera3.position.z)
         const diff = Math.sqrt(Math.pow(xDiff,2) + Math.pow(zDiff,2))
         const threshold = 8
-        if (diff < threshold) {   
-            const angle = (diff/threshold)
+        if (diff < threshold) {
+            const angle = Math.sqrt(diff/threshold)
             camera3.up = new THREE.Vector3(0,angle,angle-1)
+            //camera3.up = new THREE.Vector3(1-angle,angle,0)
         } else {
             camera3.up = new THREE.Vector3(0,1,0)   
         }
