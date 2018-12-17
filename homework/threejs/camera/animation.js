@@ -28,7 +28,7 @@ const keyFrame = [
     // {rotation:  7*Math.PI/4, connectionY: upMin, armX: sideMin, time: 1000, kegs: [  false, false, true], boxes: [false, false, true]},
     // {rotation:  5*Math.PI/4, connectionY: upMin, armX: sideMin, time: 2000, kegs: [  false, false, true], boxes: [false, false, true]},
     {rotation:  5*Math.PI/4, connectionY: upMin, armX: sideMax, time: 2000, kegs: [  false, true, false], boxes: [true, false, true]},
-    {rotation:  5*Math.PI/4, connectionY: upMax, armX: sideMin, time: 2000, kegs: [  false, true, false], boxes: [true, false, true]},
+    {rotation:  5*Math.PI/4, connectionY: upMax, armX: sideMin, time: 5000, kegs: [  false, true, false], boxes: [true, false, true]},
     {rotation:  1*Math.PI/4, connectionY: upMax, armX: sideMin, time: 2000, kegs: [  false, true, false], boxes: [true, false, true]},
     {rotation:  1*Math.PI/4, connectionY: upMin, armX: sideMax, time: 2000, kegs: [  true, false, false], boxes: [true, false, true]},
     // {rotation:  1*Math.PI/4, connectionY: upMin, armX: sideMin, time: 1000, kegs: [  true, false, false], boxes: [true, false, true]},

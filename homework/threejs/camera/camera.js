@@ -81,8 +81,7 @@ function init() {
         update1stCamera()
         update2ndCamera()
         update3rdCamera()
-       
-        
+
         rotationGroup.rotation.y = positions.rotation;
         upDownGroup.position.y = positions.connectionY;
         armGroup.position.x = positions.armX;
