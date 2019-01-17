@@ -1,7 +1,9 @@
 import * as dat from '../libs/dat.gui.module.js';
 
-const start = Date.now(),
-fov = 30;
+const start = Date.now();
+const fov = 30;
+const w_width = window.innerWidth
+const w_height = window.innerHeight*0.8
 
 window.addEventListener( 'load', function() {
 
@@ -11,7 +13,7 @@ const scene = new THREE.Scene();
 
 const camera = new THREE.PerspectiveCamera( 
     fov, 
-    window.innerWidth / window.innerHeight, 
+    w_width /w_height, 
     1, 
     10000 );
 camera.position.z = 100;
@@ -30,6 +32,12 @@ const material = new THREE.ShaderMaterial( {
 const geo = new THREE.PlaneGeometry(30, 30, 32, 32, 32);    
 const mesh = new THREE.Mesh(geo, material); 
 scene.add( mesh );
+// let  texture = new THREE.TextureLoader().load( "tiling.jpg" );
+// const geo2 = new THREE.PlaneGeometry(30, 30, 32, 32, 32);  
+// const mesh2 = new THREE.Mesh(geo, material); 
+// mesh2.position.x = 40 
+// scene.add( mesh2 );
+
 
 // MENU    
 const control = new function() {
@@ -41,7 +49,7 @@ gui.add(control, 'scale', 1.0, 10.0);
 gui.add(control, 'edge', 0.0, 10.0);    
 
 const renderer = new THREE.WebGLRenderer();
-renderer.setSize( window.innerWidth, window.innerHeight );
+renderer.setSize(w_width, w_height );
  
 container.appendChild( renderer.domElement );
 const controls = new THREE.TrackballControls( camera, renderer.domElement );     
