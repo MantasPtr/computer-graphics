@@ -14,3 +14,8 @@
 * [Animation of the robot working](http://mantasptr.github.io/computer-graphics/homework/threejs/animation/animation.html)
 * [Some custom uv texturing](http://mantasptr.github.io/computer-graphics/homework/threejs/texturing/texturing.html)
 * [Camera stuff](http://mantasptr.github.io/computer-graphics/homework/threejs/camera/camera.html)
+
+## OpenGl shaders
+
+* [Procedurally generated texture](https://mantasptr.github.io/computer-graphics/homework/threejs/shaders_teapot/texture.html)
+* [Texture applied to part of a teapot](https://mantasptr.github.io/computer-graphics/homework/threejs/shaders_teapot/teapot.html)
