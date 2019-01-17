@@ -2,7 +2,7 @@ import * as dat from '../libs/dat.gui.module.js';
 
 const start = Date.now();
 const fov = 30;
-const w_width = window.innerWidth
+const w_width = window.innerWidth*0.8
 const w_height = window.innerHeight*0.8
 
 window.addEventListener( 'load', function() {
