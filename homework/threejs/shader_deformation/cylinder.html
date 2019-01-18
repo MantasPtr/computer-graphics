@@ -33,6 +33,9 @@
         if (position.y > position.x){
             //vNormal.x = vNormal.x * tan(uAngleRad);
             newY = position.x*tan(uAngleRad);
+            if (newY > position.y) {
+                newY = position.y;
+            }
         }
         vec3 new_position = vec3(newX, newY, newZ); 
         vPosition = new_position;
