@@ -3,7 +3,19 @@ import * as dat from '../libs/dat.gui.module.js';
 let scene, camera, controls, renderer, material, control;
 const fov = 30;
 
-function onLoad() {
+
+// window.addEventListener( 'load', () => onLoad(
+//     document.getElementById( 'vertexShader' ).textContent,
+//     document.getElementById( 'fragmentShader' ).textContent
+//     ));
+
+
+
+window.addEventListener( 'load', () => loadShaders());
+
+
+
+function onLoad(vertexShader, fragmentShader) {
     const container = document.getElementById( "container" );
   
     scene = new THREE.Scene();
@@ -21,8 +33,8 @@ function onLoad() {
             uShininess: {type: 'f', value:  30.0},
             uAngleRad: {type: 'f', value: toRad(30)},
         },
-        vertexShader: document.getElementById( 'vertexShader' ).textContent,
-        fragmentShader: document.getElementById( 'fragmentShader' ).textContent  
+        vertexShader: vertexShader,
+        fragmentShader: fragmentShader,  
     } );
 
     const geo = new THREE.CylinderBufferGeometry(5,10,20,32);
@@ -62,9 +74,36 @@ function render() {
     controls.update(); 
    }
 
-window.addEventListener( 'load', onLoad);
-
 
 function toRad(v){
     return v/180*(Math.PI)
+}
+
+function loadShaders() {
+    const vertexShaderFile = "./vertex_shader.c";
+    const fragmentShaderFile = "./fragment_shader.c";
+    const errorCallback = console.error
+
+    const loadFragmentShader = (vertexShader) => loadFile(fragmentShaderFile,
+        (fragmentShader) => onLoad(vertexShader, fragmentShader) ,
+        errorCallback) 
+
+    loadFile(vertexShaderFile, loadFragmentShader, errorCallback);
+}
+
+
+function loadFile(url, callback, errorCallback) {
+    const request = new XMLHttpRequest();
+    request.open('GET', url, true);
+    request.onreadystatechange = () => {
+        if (request.readyState == 4) {
+            if (request.status == 200) {
+                callback(request.responseText)
+            } else {
+                errorCallback(url);
+            }
+        }
+    };
+
+    request.send(null);    
 }
