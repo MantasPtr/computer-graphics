@@ -1,6 +1,6 @@
 <html>
     <head>
-        <title>Diffuse shader</title>
+        <title>Teapot</title>
         <meta charset="utf-8">
 </head>
  
@@ -65,7 +65,7 @@
         vec3 lightDir = normalize(vec3(.5,.5,1)); 
         float intensity = dot(lightDir,normalize(vNormal));
         vec3 color = vec3(intensity);
-        if (vPosition.y > 0. && vPosition.y < 3. && vPosition.x > -20. && vPosition.x < 20.) {
+        if (vPosition.y > -1. && vPosition.y < 4. && vPosition.x > -20. && vPosition.x < 18.) {
             gl_FragColor = vec4(texture()*color, 1.0);
         } else {
             gl_FragColor = vec4(color, 1.0);

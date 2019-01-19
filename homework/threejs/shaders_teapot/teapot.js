@@ -41,7 +41,7 @@ function onLoad() {
         this.edge = 0.0;
     }
     const gui = new dat.GUI();
-    gui.add(control, 'scale', 1.0, 10.0);    
+    gui.add(control, 'scale', 1.0, 20.0, 1.0);    
     gui.add(control, 'edge', 0.0, 10.0);
     render();
     
