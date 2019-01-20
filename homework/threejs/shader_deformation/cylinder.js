@@ -2,7 +2,7 @@ import * as dat from '../libs/dat.gui.module.js';
 
 let scene, camera, controls, renderer, material, control;
 const fov = 30;
-
+const planeHolder = new THREE.Group();
 
 // window.addEventListener( 'load', () => onLoad(
 //     document.getElementById( 'vertexShader' ).textContent,
@@ -25,13 +25,27 @@ function onLoad(vertexShader, fragmentShader) {
     camera.target = new THREE.Vector3( 0, 0, 0 );
    
     scene.add( camera );
-     
+    
+    
+    const planeGeometry = new THREE.PlaneGeometry( 5, 20, 32 );
+    const planeMaterial = new THREE.MeshBasicMaterial( {color: 0x8888ff, side: THREE.DoubleSide} );
+    const plane = new THREE.Mesh( planeGeometry, planeMaterial );
+    plane.rotation.y = Math.PI/2
+    planeHolder.position.x = 20;
+    planeHolder.add(plane);
+    planeHolder.add(new THREE.AxesHelper( 20 ))
+    scene.add(planeHolder);
+
     material = new THREE.ShaderMaterial( {
         uniforms: { 
 			uDirX: {type: 'f', value:  0.0}, 
 			uDirY: {type: 'f', value:  0.0}, 
             uShininess: {type: 'f', value:  30.0},
             uAngleRad: {type: 'f', value: toRad(30)},
+            uPointX: {type: 'f', value: 20.0},
+            uPointY: {type: 'f', value: 0.0},
+            uPointZ: {type: 'f', value: 0.0},
+
         },
         vertexShader: vertexShader,
         fragmentShader: fragmentShader,  
@@ -52,15 +66,22 @@ function onLoad(vertexShader, fragmentShader) {
         this.dirX = 0.5;
         this.dirY = 0.0;
         this.shin = 30.0;
-        this.angleX = 30.0;
+        this.angleX = 70.0;
+        this.x = 20.0;
+        this.y = 0.0;
+        this.z = 0.0;
     }
 	const gui = new dat.GUI();
     gui.add(control, 'dirX', -1.0, 1.0);    
     gui.add(control, 'dirY', -1.0, 1.0);    
     gui.add(control, 'shin', 1.0, 60.0);
-    gui.add(control, 'angleX', -90.0, 90.0);    
-    render();
-    
+    gui.add(control, 'angleX', -180.0, 180.0);
+    const f1 = gui.addFolder('Point');
+    f1.add(control, 'x', -100.0, 100.0);    
+    f1.add(control, 'y', -100.0, 100.0);
+    f1.add(control, 'z', -100.0, 100.0);
+
+    render()
 }
 
 function render() {
@@ -68,11 +89,21 @@ function render() {
     material.uniforms.uDirY.value = control.dirY; 
     material.uniforms.uShininess.value = control.shin;
     material.uniforms.uAngleRad.value = toRad(control.angleX);
-    // render
+    material.uniforms.uPointX.value = control.x 
+    material.uniforms.uPointY.value = control.y 
+    material.uniforms.uPointZ.value = control.z 
+    planeHolder.position.x = control.x
+    planeHolder.position.y = control.y
+    planeHolder.position.z = control.z
+    planeHolder.rotation.z = toRad(control.angleX)
+
     renderer.render( scene, camera );
     requestAnimationFrame( render );
     controls.update(); 
    }
+
+
+//UTILS
 
 
 function toRad(v){
@@ -80,8 +111,8 @@ function toRad(v){
 }
 
 function loadShaders() {
-    const vertexShaderFile = "./vertex_shader.c";
-    const fragmentShaderFile = "./fragment_shader.c";
+    const vertexShaderFile = "./vertex_shader.glsl";
+    const fragmentShaderFile = "./fragment_shader.glsl";
     const errorCallback = console.error
 
     const loadFragmentShader = (vertexShader) => loadFile(fragmentShaderFile,
