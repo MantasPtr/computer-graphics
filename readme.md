@@ -19,4 +19,4 @@
 
 * [Procedurally generated texture](https://mantasptr.github.io/computer-graphics/homework/threejs/shaders_teapot/texture.html)
 * [Texture applied to part of a teapot](https://mantasptr.github.io/computer-graphics/homework/threejs/shaders_teapot/teapot.html)
-* [TODO: Cone plane - intersection](https://mantasptr.github.io/computer-graphics/homework/threejs/shader_deformation/cylinder.html)
+* [TODO: Cone plane - intersection](https://mantasptr.github.io/computer-graphics/homework/threejs/shader_deformation/cone.html)

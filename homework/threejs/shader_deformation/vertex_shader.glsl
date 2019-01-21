@@ -24,7 +24,6 @@ void main(void) {
     if (dot(planeNormal,(pointOnPlane - position)) < 0.0) {
         float distanceToPlane = dot(position - pointOnPlane, planeNormal);
         new_position = position - planeNormal * distanceToPlane;
-        vNormal = planeNormal;
     } else 
     vPosition = new_position;
     vPosInCamera = (viewMatrix * modelMatrix * vec4(new_position, 1.0 )).xyz;
